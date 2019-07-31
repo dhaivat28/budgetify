@@ -38,7 +38,6 @@ var UIController = (function(){
 //////////////////////////////  Global APP Controller ///////////////////////////////////////////////////
 var contoller = (function(budgetCtrl, UICtrl){
     
-    
     var setupEventListeners = function(){
 
         var DOM = UICtrl.getDOMstrings();
@@ -57,5 +56,13 @@ var contoller = (function(budgetCtrl, UICtrl){
         console.log(fieldInputs);    
     };
     
+    return {
+        init:function() {
+            setupEventListeners();
+        }
+    }
+    
 })(budegetController,UIController);
+
+contoller.init();
 
