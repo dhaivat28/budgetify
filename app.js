@@ -5,7 +5,7 @@ var budegetController = (function(){
 })();
 
 
-//UI Controller
+//////////////////////////////  UI Controller ///////////////////////////////////////////////////
 var UIController = (function(){
     
     var DOMstrings = {
@@ -35,23 +35,27 @@ var UIController = (function(){
 })();
 
 
-//Global APP Controller
+//////////////////////////////  Global APP Controller ///////////////////////////////////////////////////
 var contoller = (function(budgetCtrl, UICtrl){
+    
+    
+    var setupEventListeners = function(){
+
+        var DOM = UICtrl.getDOMstrings();
+        document.querySelector(DOM.inputBtn).addEventListener('click',ctrlAddItem);
+
+        document.addEventListener('keypress', function() {
+            if(event.keyCode===13 || event.which ===13) {
+                ctrlAddItem();
+            }
+        });
+
+    };
     
     var ctrlAddItem = function() {
         var fieldInputs = UICtrl.getInput();
         console.log(fieldInputs);    
-    }
-    
-var DOM = UICtrl.getDOMstrings();
- 
-document.querySelector(DOM.inputBtn).addEventListener('click',ctrlAddItem);
-
-document.addEventListener('keypress', function() {
-        if(event.keyCode===13 || event.which ===13) {
-            ctrlAddItem();
-        }
-    });
+    };
     
 })(budegetController,UIController);
 
