@@ -16,6 +16,18 @@ var budegetController = (function(){
      this.value = value;
  }
  
+ var data = {
+     allItems : {
+         exp:[],
+         inc:[]
+     },
+     
+     totals: {
+         exp:0,
+         inc:0
+     }
+ }
+ 
 })();
 
 
