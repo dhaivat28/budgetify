@@ -1,6 +1,20 @@
 // Budget Controller
 var budegetController = (function(){
-    
+
+
+ //Functional Constructors 
+ var Expense = function(id, description,value) {
+     this.id = id;
+     this.description = description;
+     this.value = value;
+ }
+ 
+ //Functional Constructors 
+ var Income = function(id, description, value){
+     this.id = id;
+     this.description = description;
+     this.value = value;
+ }
  
 })();
 
@@ -48,7 +62,6 @@ var contoller = (function(budgetCtrl, UICtrl){
                 ctrlAddItem();
             }
         });
-
     };
     
     var ctrlAddItem = function() {
@@ -59,7 +72,7 @@ var contoller = (function(budgetCtrl, UICtrl){
     return {
         init:function() {
             setupEventListeners();
-        }
+        } 
     }
     
 })(budegetController,UIController);
