@@ -28,6 +28,26 @@ var budegetController = (function(){
      }
  }
  
+ return {
+     addItem:function(type,des,val) {
+         
+         var ID, newItem;
+         
+         // Create new ID
+         ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+         
+             
+         if (type == 'exp') {
+             newItem = new Expense(Id, des, val);
+         } else {
+             newItem = new Income(Id, des, val);
+         }
+         
+         data.allItems[type].push(newItem);
+         return newItem;
+     }
+ }
+ 
 })();
 
 
