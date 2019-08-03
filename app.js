@@ -36,14 +36,16 @@ var budegetController = (function(){
          // Create new ID
          ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
          
-             
+         //create new id based on inc or exp    
          if (type == 'exp') {
              newItem = new Expense(Id, des, val);
          } else {
              newItem = new Income(Id, des, val);
          }
          
+         //push it into our data structure
          data.allItems[type].push(newItem);
+         // return the new element
          return newItem;
      }
  }
@@ -97,8 +99,17 @@ var contoller = (function(budgetCtrl, UICtrl){
     };
     
     var ctrlAddItem = function() {
-        var fieldInputs = UICtrl.getInput();
-        console.log(fieldInputs);    
+         
+        var newItem, input;
+        
+        //1. Get Input Field Data
+        var input = UICtrl.getInput();
+        
+        //2. Add item to the budget controller
+        newItem = budgetCtrl.addItem(input.type,input.description, input.value    )
+        
+        
+        
     };
     
     return {
