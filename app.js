@@ -55,6 +55,16 @@ var budegetController = (function(){
          return newItem;
      },
      
+      calculateBudget:function() {
+         //calculate total income and expenses
+          
+          
+          //calculate total budeget = income-expense
+          
+          
+          //
+     },
+     
      testing:function() {
          console.log('yes testing'); 
      }
@@ -82,7 +92,7 @@ var UIController = (function(){
             return {
                 type:document.querySelector(DOMstrings.inputType).value,
                 description: document.querySelector(DOMstrings.inputDescription).value,
-                value: document.querySelector(DOMstrings.inputValue).value    
+                value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
             }
         }, // end of getInput function
         
@@ -155,6 +165,11 @@ var contoller = (function(budgetCtrl, UICtrl){
         });
     };
     
+    var updateBudget = function() {
+        
+        
+    }
+    
     var ctrlAddItem = function() {
          
         var newItem, input;
@@ -162,14 +177,21 @@ var contoller = (function(budgetCtrl, UICtrl){
         //1. Get Input Field Data
         var input = UICtrl.getInput();
         
-        //2. Add item to the budget controller
-        newItem = budgetCtrl.addItem(input.type,input.description, input.value);
-        
-        //3.Add Item to the UI
-        UICtrl.addListItem(newItem,input.type);
-        
-        //4. Clear Fields
-        UICtrl.clearFields();
+        if(input.description !== "" && !isNaN(input.value) && input.value > 0) {
+
+            //2. Add item to the budget controller
+            newItem = budgetCtrl.addItem(input.type,input.description, input.value);
+
+            //3.Add Item to the UI
+            UICtrl.addListItem(newItem,input.type);
+
+            //4. Clear Fields
+            UICtrl.clearFields();
+
+            //5. Calculate and Update Budget
+            updateBudget();        
+    
+        }
     };
     
     return {
