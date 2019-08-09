@@ -1,79 +1,107 @@
-// Budget Controller
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                           Budget Controller                                                            //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var budegetController = (function(){
 
+     var Expense = function(id, description,value) {
+         this.id = id;
+         this.description = description;
+         this.value = value;
+     }
 
- //Functional Constructors 
- var Expense = function(id, description,value) {
-     this.id = id;
-     this.description = description;
-     this.value = value;
- }
- 
- //Functional Constructors 
- var Income = function(id, description, value){
-     this.id = id;
-     this.description = description;
-     this.value = value;
- }
- 
- var data = {
-     allItems : {
-         exp:[],
-         inc:[]
-     },
-     
-     totals: {
-         exp:0,
-         inc:0
+     var Income = function(id, description, value){
+         this.id = id;
+         this.description = description;
+         this.value = value;
      }
- }
  
- return {
-     
-     addItem:function(type,des,val) {
+     var calculateTotal = function(type){
+         var sum = 0;
+         data.allItems[type].forEach(function(cur){ 
+         sum += cur.value;
+        });
+         data.totals[type] = sum;
+     };
+                          
+     var data = {
+         allItems : {
+             exp:[],
+             inc:[]
+         },
+
+         totals: {
+             exp:0,
+             inc:0
+         },
          
-         var ID, newItem;
+         budget:0,
+         percentage:0
          
-         // Create new ID
-         if (data.allItems[type].length > 0)
-             {
-             ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+     }
+ 
+     return {
+
+         addItem:function(type,des,val) {
+
+             var ID, newItem;
+
+             // Create new ID
+             if (data.allItems[type].length > 0)
+                 {
+                 ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
+                 } else {
+                 ID = 0; 
+                 }
+
+             //create new id based on inc or exp    
+             if (type == 'exp') {
+                 newItem = new Expense(ID, des, val);
              } else {
-             ID = 0; 
+                 newItem = new Income(ID, des, val);
              }
+
+             data.allItems[type].push(newItem);
+             return newItem;
+         },
+
+          calculateBudget:function() {
+             
+              //calculate total income and expenses
+                calculateTotal('inc');
+                calculateTotal('exp');
+              
+            //calculate total budeget = income-expense
+              data.budget = data.totals.inc-data.totals.exp;
+
+            //calculate percentage of income spent 
+              data.percentage = Math.round((data.totals.inc/data.totals.exp) * 100);
+         },
          
-         //create new id based on inc or exp    
-         if (type == 'exp') {
-             newItem = new Expense(ID, des, val);
-         } else {
-             newItem = new Income(ID, des, val);
+        getBudget:function() {
+            return {
+                budget:data.budget,
+                totalInc:data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage:data.percentage
+            };    
+         },
+
+         testing:function() {
+             
          }
-         
-         //push it into our data structure
-         data.allItems[type].push(newItem);
-         // return the new element
-         return newItem;
-     },
-     
-      calculateBudget:function() {
-         //calculate total income and expenses
-          
-          
-          //calculate total budeget = income-expense
-          
-          
-          //
-     },
-     
-     testing:function() {
-         console.log('yes testing'); 
      }
- }
  
 })();
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                          UI Controller                                                                 //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////  UI Controller ///////////////////////////////////////////////////
 var UIController = (function(){
     
     var DOMstrings = {
@@ -82,7 +110,10 @@ var UIController = (function(){
         inputValue:'.add__value',
         inputBtn : '.add__btn',
         incomeContainer : '.income__list',
-        expenseContainer : '.expenses__list'
+        expenseContainer : '.expenses__list',
+        budgetLabel: '.budget__income--value',
+        budgetLabel: '.budget__expenses--value',
+        percentageLabel:'.budget__expenses--percentage'        
     }
     
     //main return
@@ -93,26 +124,22 @@ var UIController = (function(){
                 type:document.querySelector(DOMstrings.inputType).value,
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
-            }
+            };
         }, // end of getInput function
         
         addListItem:function(obj,type) {
             
             var html, newHtml, element;
             
-            
             // 1. create new placeholder with inc and exp html
             if(type === 'inc')
                 {
-                    
                     element = DOMstrings.incomeContainer;
-                    
                      html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
                 
                 } else { 
                     
                      element = DOMstrings.expenseContainer;
-                    
                      html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
                 }
             
@@ -122,10 +149,8 @@ var UIController = (function(){
                 newHtml = newHtml.replace('%value%',obj.value);
                 
             //3. Insert html Into DOM
-            
                 document.querySelector(element).insertAdjacentHTML('beforeend',newHtml);
-            
-           
+        
         }, // end of addItemList Function
         
         clearFields:function() {
@@ -136,9 +161,7 @@ var UIController = (function(){
             fieldsArr.forEach(function(current,index,array){
                current.value = ""; 
             });
-            
             fieldsArr[0].focus();
-            
         },
         
         getDOMstrings:function() {
@@ -150,7 +173,12 @@ var UIController = (function(){
 })();
 
 
-//////////////////////////////  Global APP Controller ///////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                          Global APP Controller                                                         //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var contoller = (function(budgetCtrl, UICtrl){
     
     var setupEventListeners = function(){
@@ -167,6 +195,14 @@ var contoller = (function(budgetCtrl, UICtrl){
     
     var updateBudget = function() {
         
+        //1. Calculate the total budget
+        budgetCtrl.calculateBudget();
+        
+        //2. Return Budget
+        var budget = budgetCtrl.getBudget;
+        
+        //3.Diplay the results
+        //console.log(b);
         
     }
     
