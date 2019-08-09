@@ -2,7 +2,7 @@
 //                                                                                                                        //
 //                                           Budget Controller                                                            //
 //                                                                                                                        //
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var budegetController = (function(){
 
@@ -45,7 +45,7 @@ var budegetController = (function(){
      return {
 
          addItem:function(type,des,val) {
-
+             
              var ID, newItem;
 
              // Create new ID
@@ -78,19 +78,26 @@ var budegetController = (function(){
 
             //calculate percentage of income spent 
               data.percentage = Math.round((data.totals.inc/data.totals.exp) * 100);
+              
+              if(data.totals.inc>0){
+                data.percentage = Math.round((data.totals.inc/data.totals.exp) * 100);      
+              } else {
+                data.percentage = -1;
+              }
+                   
          },
          
-        getBudget:function() {
-            return {
-                budget:data.budget,
-                totalInc:data.totals.inc,
-                totalExp: data.totals.exp,
-                percentage:data.percentage
-            };    
-         },
+          getBudget: function(data) {
+               return {
+                budget: 10,
+                totalInc: 20,
+                totalExp: 30,
+                percentage: 40
+            };   
+        },
 
          testing:function() {
-             
+            console.log(data);
          }
      }
  
@@ -113,7 +120,11 @@ var UIController = (function(){
         expenseContainer : '.expenses__list',
         budgetLabel: '.budget__income--value',
         budgetLabel: '.budget__expenses--value',
-        percentageLabel:'.budget__expenses--percentage'        
+        percentageLabel:'.budget__expenses--percentage',
+        budgetLabel: '.budget__value',
+        incomeLabel: '.budget__income--value',
+        expenseLabel: '.budget__expenses--value',
+        percentageLabel: '.budget__expenses--percentage' 
     }
     
     //main return
@@ -128,40 +139,39 @@ var UIController = (function(){
         }, // end of getInput function
         
         addListItem:function(obj,type) {
-            
             var html, newHtml, element;
-            
             // 1. create new placeholder with inc and exp html
             if(type === 'inc')
                 {
                     element = DOMstrings.incomeContainer;
-                     html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
-                
-                } else { 
-                    
+                     html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';     
+                } else {       
                      element = DOMstrings.expenseContainer;
                      html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
                 }
-            
              //2. Replace placeholder with actual data
                 newHtml = html.replace('%id%',obj.id);
                 newHtml = newHtml.replace('%description%',obj.description);
-                newHtml = newHtml.replace('%value%',obj.value);
-                
+                newHtml = newHtml.replace('%value%',obj.value);        
             //3. Insert html Into DOM
                 document.querySelector(element).insertAdjacentHTML('beforeend',newHtml);
-        
         }, // end of addItemList Function
         
         clearFields:function() {
             var Fields, fieldsArr;
             fields = document.querySelectorAll(DOMstrings.inputDescription + ',' + DOMstrings.inputValue); 
             fieldsArr = Array.prototype.slice.call(fields);
-            
             fieldsArr.forEach(function(current,index,array){
                current.value = ""; 
             });
             fieldsArr[0].focus();
+        },
+        
+        displayBudget:function(obj){
+            document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
+            document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
+            document.querySelector(DOMstrings.expenseLabel).textContent = obj.totalExp;
+            document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage;  
         },
         
         getDOMstrings:function() {
@@ -173,7 +183,7 @@ var UIController = (function(){
 })();
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                                        //
 //                                          Global APP Controller                                                         //
 //                                                                                                                        //
@@ -199,10 +209,10 @@ var contoller = (function(budgetCtrl, UICtrl){
         budgetCtrl.calculateBudget();
         
         //2. Return Budget
-        var budget = budgetCtrl.getBudget;
+        var budget = budgetCtrl.getBudget();
         
         //3.Diplay the results
-        //console.log(b);
+        UICtrl.displayBudget(budget);
         
     }
     
