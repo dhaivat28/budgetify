@@ -23,6 +23,7 @@ var budegetController = (function(){
          data.allItems[type].forEach(function(cur){ 
          sum += cur.value;
         });
+         
          data.totals[type] = sum;
      };
                           
@@ -84,15 +85,15 @@ var budegetController = (function(){
               } else {
                 data.percentage = -1;
               }
-                   
+              
          },
          
-          getBudget: function(data) {
+          getBudget: function() {
                return {
-                budget: 10,
-                totalInc: 20,
-                totalExp: 30,
-                percentage: 40
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
             };   
         },
 
@@ -171,7 +172,13 @@ var UIController = (function(){
             document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
             document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
             document.querySelector(DOMstrings.expenseLabel).textContent = obj.totalExp;
-            document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage;  
+            
+            if(obj.percentage > 0){
+             document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';     
+            } else {
+              document.querySelector(DOMstrings.percentageLabel).textContent = '---     ';  
+      
+            }
         },
         
         getDOMstrings:function() {
@@ -243,8 +250,14 @@ var contoller = (function(budgetCtrl, UICtrl){
     return {
         init:function() {
             setupEventListeners();
-            budgetCtrl.testing();  
-        } 
+            
+            UICtrl.displayBudget({
+                budget:0,
+                totalInc: 0,
+                totalExp: 0,
+                percentage: -1
+             });
+        }
     }
     
 })(budegetController,UIController);
