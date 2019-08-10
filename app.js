@@ -158,7 +158,7 @@ var UIController = (function(){
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
             };
-        }, // end of getInput function
+        }, 
         
         addListItem:function(obj,type) {
             var html, newHtml, element;
@@ -175,9 +175,15 @@ var UIController = (function(){
                 newHtml = html.replace('%id%',obj.id);
                 newHtml = newHtml.replace('%description%',obj.description);
                 newHtml = newHtml.replace('%value%',obj.value);        
-            //3. Insert html Into DOM
+             //3. Insert html Into DOM
                 document.querySelector(element).insertAdjacentHTML('beforeend',newHtml);
-        }, // end of addItemList Function
+        }, 
+        
+        deleteListitem:function(selectorID) {
+        
+            var el = document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
+        }, 
         
         clearFields:function() {
             var Fields, fieldsArr;
@@ -197,7 +203,7 @@ var UIController = (function(){
             if(obj.percentage > 0){
              document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';     
             } else {
-              document.querySelector(DOMstrings.percentageLabel).textContent = '---     ';  
+              document.querySelector(DOMstrings.percentageLabel).textContent = '---';  
       
             }
         },
@@ -211,7 +217,7 @@ var UIController = (function(){
 })();
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                                        //
 //                                          Global APP Controller                                                         //
 //                                                                                                                        //
@@ -285,10 +291,11 @@ var contoller = (function(budgetCtrl, UICtrl){
             //1. Delete the item from the data structure
             budgetCtrl.deleteItem(type, ID);
             
-            
             //2. Delte the item from the UI
+            UICtrl.deleteListitem(itemID);
             
             //3. update and show the budget
+            updateBudget();        
         }
         
     };
