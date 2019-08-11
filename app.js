@@ -16,7 +16,6 @@ var budegetController = (function(){
      Expense.prototype.calcPercentage = function(totalIncome){
           if(totalIncome > 0) {
               this.percentage = ((this.value/totalIncome) * 100);
-              console.log(this.percentage);
           } else {
               this.percentage = -1;
           }
@@ -130,6 +129,8 @@ var budegetController = (function(){
              var allPerc = data.allItems.exp.map(function(cur){
                 return cur.getPercentage();
              });
+             
+             return allPerc;
          },
          
           getBudget: function() {
